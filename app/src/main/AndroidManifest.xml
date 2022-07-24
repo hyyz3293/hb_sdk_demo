@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.huabao.huabaosdkdemo">
+    <!-- 用于访问网络，网络定位需要上网 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 用于申请调用A-GPS模块-end -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> <!-- 二维码扫描 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" /> <!-- 挂电话权限 -->
+    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" /> <!-- 获取imei号 -->
+    <!-- 获取手机状态 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 获取特权手机状态  高版本编译时需要 -->
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 下载apk，日志输出 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 来电模块 获取联系人姓名 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" /> <!-- 手机静音控制权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" /> <!-- 用于获取运营商信息，用于支持提供运营商信息相关的接口 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 小米手机需要加的权限，并且要在app打开时动态申请，该权限打开，才能获取来电电话信息 -->
+    <uses-permission android:name="android.permission.READ_CALL_LOG" /> <!-- 挂断电话权限，反射关闭电话时，该权限有可能没打开，导致无法正常挂断电话 -->
+    <uses-permission android:name="android.permission.CALL_PHONE" /> <!-- 处理拨出电话，允许程序监视,修改或放弃播出电话 -->
+    <!-- <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" /> -->
+    <!-- 获取手机状态（包括手机号码、IMEI、IMSI权限等） -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 接听电话会提示该权限没有，挂断电话正常使用，有以上权限即可正常使用,暂不处理，预留 -->
+    <uses-permission
+        android:name="android.permission.MODIFY_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" /> <!-- 安装apk -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 新权限 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:name=".HuabaoApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:exported="true"
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:exported="true"
+            android:name=".DialActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:exported="true"
+            android:name=".RemindActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:exported="true"
+            android:name=".SetMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:exported="true"
+            android:name=".HrMonitorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:exported="true"
+            android:name=".NodisturbActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:exported="true"
+            android:name=".WomenHealthActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:exported="true"
+            android:name=".RegularRemindActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:exported="true"
+            android:name=".LongSitActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:exported="true"
+            android:name=".ScanActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

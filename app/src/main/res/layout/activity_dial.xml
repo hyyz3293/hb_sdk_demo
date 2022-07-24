@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".DialActivity">
+
+    <TextView
+        android:id="@+id/backTv"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="@string/str_back" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="@string/str_show_result"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/clearBtn"
+        android:layout_width="wrap_content"
+        android:text="@string/str_clear_show"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/showTv"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/otaPickBtn"
+            android:text="@string/str_pick_ota_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/otaBtn"
+            android:text="@string/str_trans_ota_file"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/dialPickBtn"
+            android:text="@string/str_pick_dial_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/generateDialBtn"
+            android:text="@string/str_genrate_dial"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/transDialBtn"
+            android:text="@string/str_trans_dial"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>
