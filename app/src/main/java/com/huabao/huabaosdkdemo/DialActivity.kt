@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import cn.baos.watch.sdk.BaosWatchSdk
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_dial.clearBtn
 import kotlinx.android.synthetic.main.activity_dial.showTv
 import kotlinx.android.synthetic.main.activity_main.*
 import me.rosuh.filepicker.config.FilePickerManager
+import me.rosuh.filepicker.engine.ImageEngine
 import me.rosuh.filepicker.filetype.RasterImageFileType
 import java.io.File
 
@@ -33,7 +35,7 @@ class DialActivity : AppCompatActivity() {
         initView()
     }
 
-    private var otaFile =""
+    private var otaFile ="storage/emulated/0/122.bin"
 
     private var imageFile =""
 
@@ -49,11 +51,14 @@ class DialActivity : AppCompatActivity() {
         }
 
         otaPickBtn.setOnClickListener {
+//            FilePickerManager
+//                .from(this)
+//                .enableSingleChoice()
+//                //.registerFileType(arrayListOf(OTAFileType()), true)
+//                .forResult(200)
             FilePickerManager
                 .from(this)
-                .enableSingleChoice()
-                .registerFileType(arrayListOf(OTAFileType()), true)
-                .forResult(200)
+                .forResult(FilePickerManager.REQUEST_CODE)
 
         }
 
@@ -65,10 +70,12 @@ class DialActivity : AppCompatActivity() {
             BaosWatchSdk.translateFile(File(otaFile), 0, object : TranslateCallback {
                 override fun onLoadFile(progress: Int) {
                     addShowText("正在加载文件：$progress ")
+                    //WatchBindManager.getInstance().hasOtaStatus(applicationContext, true)
                 }
 
                 override fun onLoadFileFail() {
                     addShowText("加载文件失败")
+                    //WatchBindManager.getInstance().hasOtaStatus(applicationContext, false)
                 }
 
                 override fun onWaitWatchStartTranslate() {
@@ -77,6 +84,7 @@ class DialActivity : AppCompatActivity() {
 
                 override fun onTranslateStart() {
                     addShowText("加载完成，开始传输文件")
+                    //WatchBindManager.getInstance().hasOtaStatus(applicationContext, true)
                 }
 
                 override fun onTransferProgress(progress: Int) {
@@ -85,10 +93,12 @@ class DialActivity : AppCompatActivity() {
 
                 override fun onTransferFinish() {
                     addShowText("传输结束")
+                    //WatchBindManager.getInstance().hasOtaStatus(applicationContext, true)
                 }
 
                 override fun onTransferFail(errorCode: Int) {
                     addShowText("传输失败：${errorCode}")
+                    //WatchBindManager.getInstance().hasOtaStatus(applicationContext, false)
                 }
 
             })
@@ -168,6 +178,7 @@ class DialActivity : AppCompatActivity() {
             200 -> {
                 if (resultCode == RESULT_OK && data != null) {
                     val list = FilePickerManager.obtainData()
+                    ///storage/emulated/0/122.bin https___blog.csdn.net_qq_44203816_article_details_124850092.png
                     if (!list.isNullOrEmpty()) {
                         otaFile = list[0]
                     }

@@ -12,6 +12,16 @@ public class OptionButton {
     private int type;
 
     public static final int TYPE_CONNECT = 1;
+
+    public static final int TYPE_SCAN = 2233;
+    public static final int TYPE_SCAN_CANCEL = 3322;
+
+    public static final int TYPE_CONNECT_BT = 100;
+    public static final int TYPE_BOND = 124;
+
+    public static final int TYPE_CONNECT_MORE = 111;
+    public static final int TYPE_CONNECT_MORE_LIST = 112;
+    public static final int TYPE_CONNECT_MORE_NOW = 113;
     public static final int TYPE_DISCONNECT = 2;
     public static final int TYPE_BIND_DEVICE = 3;
     public static final int TYPE_UNBIND_DEVICE = 4;
@@ -49,6 +59,11 @@ public class OptionButton {
     public static final int TYPE_CLOSE_MUSIC = 36;
     public static final int TYPE_GET_REAL_HR_DATA =37;
     public static final int TYPE_GET_REAL_SPO_DATA =38;
+    public static final int TYPE_GET_CONTACT = 39;
+    public static final int TYPE_GET_CONTACT_SET = 40;
+    public static final int TYPE_PRAYER_TIME = 41;
+    public static final int TYPE_PRAYER_GPS_TIME = 42;
+    public static final int TYPE_CONNECT_MORE_DEVICE = 43;
 
     public OptionButton(String buttonText, int type) {
         this.buttonText = buttonText;

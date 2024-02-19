@@ -1,6 +1,8 @@
 package com.huabao.huabaosdkdemo;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Author: ch
@@ -44,6 +46,9 @@ public class DeviceBean {
         DeviceBean that = (DeviceBean) o;
         return Objects.equals(deviceName, that.deviceName) &&
                 Objects.equals(deviceMac, that.deviceMac);
+
+
+
     }
 
     @Override

@@ -10,8 +10,15 @@
     <string name="device_mac_hint">设备地址：</string>
     <string name="connect_status">连接状态</string>
     <string name="str_connect">连接</string>
+    <string name="str_connect_bt">连接 BT</string>
+    <string name="str_bond">配对</string>
+    <string name="str_connect_more">连接-多设备</string>
+    <string name="str_connect_more_device">多设备-列表</string>
+    <string name="str_connect_more_now">多设备-当前</string>
     <string name="str_disconnect">断开连接</string>
     <string name="str_connecting">连接中</string>
+    <string name="str_bing_success">绑定成功</string>
+    <string name="str_bing_fail">绑定成功</string>
     <string name="str_connected">已连接</string>
     <string name="str_disconnected">已断开</string>
     <string name="str_clear_show">清除显示内容</string>
@@ -108,4 +115,10 @@
     <string name="str_add_notify">新增APP通知</string>
     <string name="str_update_notify">修改APP通知开关</string>
     <string name="str_close_notify">关闭消息通知总开关</string>
+
+    <string name="str_contact">获取手表通讯录</string>
+    <string name="str_contact_set">设置手表通讯录</string>
+    <string name="str_payer_time">穆斯林</string>
+    <string name="str_payer_gps_time">穆斯林-gps</string>
+    <string name="str_more_device">多设备切换</string>
 </resources>

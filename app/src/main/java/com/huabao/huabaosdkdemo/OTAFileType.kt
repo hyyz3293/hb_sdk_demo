@@ -25,7 +25,7 @@ class OTAFileType:FileType {
         }
         val suffix = fileName.substring(fileName.lastIndexOf(".") + 1)
         return when (suffix) {
-            "bin", "fw" -> {
+            "bin", "fw", "png", "apk" -> {
                 true
             }
             else -> {

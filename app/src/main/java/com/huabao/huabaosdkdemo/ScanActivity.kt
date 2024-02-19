@@ -6,6 +6,7 @@ import android.bluetooth.le.ScanResult
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -39,6 +40,7 @@ class ScanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan)
         initView()
+        BaosWatchSdk.getNotificationAppList()
     }
 
     private fun initView() {
@@ -48,6 +50,20 @@ class ScanActivity : AppCompatActivity() {
         deviceRecyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
 
         BaosWatchSdk.addScannerListener(scannerListener)
+
+        share.setOnClickListener {
+            rxPermission.request(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ).subscribe {
+                if (it) {
+                    BaosWatchSdk.shareLogFile(this@ScanActivity,)
+                } else {
+
+                }
+            }
+
+        }
 
         scanBtn.setOnClickListener {
             if (!bluetoothAdapter.isEnabled) {
@@ -168,6 +184,49 @@ class ScanActivity : AppCompatActivity() {
         override fun onScanning(result: ScanResult?) {
             val deviceBean = DeviceBean()
             deviceBean.deviceName = result?.device?.name
+
+//            if (result!!.scanRecord != null && result.scanRecord!!.manufacturerSpecificData != null) {
+//                val sparseArray = result.scanRecord!!.manufacturerSpecificData
+//                if (sparseArray != null && sparseArray.size() > 0) {
+//                    val key = sparseArray.keyAt(0)
+//                    val byteMac = sparseArray[key]
+//                    if (byteMac != null && byteMac.size > 0) {
+//                        if (byteMac.size == 7 && byteMac[byteMac.size - 1].toInt() == 1) {
+//                            deviceBean.setDeviceName("W331")
+//                        } else {
+//                            deviceBean.setDeviceName("W200")
+//                        }
+//                    }
+//                }
+//            }
+
+            //                    if (result.getScanRecord() != null && result.getScanRecord().getManufacturerSpecificData() != null) {
+//                        SparseArray<byte[]> sparseArray = result.getScanRecord().getManufacturerSpecificData();
+//                        if (sparseArray != null && sparseArray.size() > 0) {
+//                            int key = sparseArray.keyAt(0);
+//                            byte[] byteMac = sparseArray.get(key);
+//                            if (byteMac != null && byteMac.length > 0 ) {
+//                                if (byteMac.length == 7 && byteMac[byteMac.length - 1] == 1) {
+//                                    bleDeviceInfo.setDeviceName("W300");
+//                                } else {
+//                                    bleDeviceInfo.setDeviceName("W200");
+//                                }
+//                            }
+//                        }
+//                    }
+            val deviceName = result!!.device.name
+            if (!TextUtils.isEmpty(deviceName)) {
+                if (deviceName.contains("W200_G50_HB")) {
+                    val num: String =
+                        BaosWatchSdk.changeMacAddressToFourNumber(
+                            result.device.address
+                        )
+                    deviceBean.setDeviceName("W200$num")
+                } else if (deviceName.contains("QW01")) {
+                    deviceBean.setDeviceName(deviceName)
+                }
+            }
+
             deviceBean.deviceMac = result?.device?.address
             deviceBean.deviceRssi = "${result?.rssi}"
             if (!deviceList.contains(deviceBean)) {

@@ -1,17 +1,23 @@
 package com.huabao.huabaosdkdemo
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import cn.baos.watch.sdk.BaosWatchSdk
 import cn.baos.watch.sdk.api.ConnectListener
 import cn.baos.watch.sdk.api.DeviceCallBack
 import cn.baos.watch.sdk.api.SyncDataListener
+import cn.baos.watch.sdk.entitiy.ContactInfoEntity
+import cn.baos.watch.sdk.entitiy.PrayerGpsEntity
+import cn.baos.watch.sdk.entitiy.PrayerTimeEntity
 import cn.baos.watch.sdk.entitiy.WeatherEntity
+import cn.baos.watch.sdk.utils.LogUtil
 import cn.baos.watch.w100.messages.*
 import com.google.gson.Gson
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -57,16 +63,43 @@ class MainActivity : AppCompatActivity() {
         val buttons = mutableListOf<OptionButton>()
         buttons.add(
             OptionButton(
+                "扫描",
+                OptionButton.TYPE_SCAN
+            )
+        )
+        buttons.add(
+            OptionButton(
+                "取消扫描",
+                OptionButton.TYPE_SCAN_CANCEL
+            )
+        )
+        buttons.add(
+            OptionButton(
                 resources.getString(R.string.str_connect),
                 OptionButton.TYPE_CONNECT
             )
         )
         buttons.add(
             OptionButton(
+                resources.getString(R.string.str_connect_bt),
+                OptionButton.TYPE_CONNECT_BT
+            )
+        )
+
+        buttons.add(
+            OptionButton(
+                resources.getString(R.string.str_bond),
+                OptionButton.TYPE_BOND
+            )
+        )
+
+        buttons.add(
+            OptionButton(
                 resources.getString(R.string.str_disconnect),
                 OptionButton.TYPE_DISCONNECT
             )
         )
+
         buttons.add(
             OptionButton(
                 resources.getString(R.string.str_bind_device),
@@ -79,6 +112,25 @@ class MainActivity : AppCompatActivity() {
                 OptionButton.TYPE_UNBIND_DEVICE
             )
         )
+        buttons.add(
+            OptionButton(
+                resources.getString(R.string.str_connect_more),
+                OptionButton.TYPE_CONNECT_MORE
+            )
+        )
+        buttons.add(
+            OptionButton(
+                resources.getString(R.string.str_connect_more_device),
+                OptionButton.TYPE_CONNECT_MORE_LIST
+            )
+        )
+        buttons.add(
+            OptionButton(
+                resources.getString(R.string.str_connect_more_now),
+                OptionButton.TYPE_CONNECT_MORE_NOW
+            )
+        )
+
         buttons.add(
             OptionButton(
                 resources.getString(R.string.str_get_watch_info),
@@ -284,6 +336,36 @@ class MainActivity : AppCompatActivity() {
                 OptionButton.TYPE_CLOSE_MUSIC
             )
         )
+        buttons.add(
+            OptionButton(
+                resources.getString(R.string.str_contact),
+                OptionButton.TYPE_GET_CONTACT
+            )
+        )
+        buttons.add(
+            OptionButton(
+                resources.getString(R.string.str_contact_set),
+                OptionButton.TYPE_GET_CONTACT_SET
+            )
+        )
+        buttons.add(
+            OptionButton(
+                resources.getString(R.string.str_payer_time),
+                OptionButton.TYPE_PRAYER_TIME
+            )
+        )
+        buttons.add(
+            OptionButton(
+                resources.getString(R.string.str_payer_gps_time),
+                OptionButton.TYPE_PRAYER_GPS_TIME
+            )
+        )
+//        buttons.add(
+//            OptionButton(
+//                resources.getString(R.string.str_more_device),
+//                OptionButton.TYPE_CONNECT_MORE_DEVICE
+//            )
+//        )
         buttons
     }
 
@@ -294,6 +376,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         initView()
         initSdkFun()
     }
@@ -315,17 +398,29 @@ class MainActivity : AppCompatActivity() {
         optionAdapter.setOnItemChildClickListener { adapter, view, position ->
             if (position >= 0 && position < optionButtons.size) {
                 when (optionButtons[position].type) {
+                    OptionButton.TYPE_SCAN -> {
+                        BaosWatchSdk.startScan()
+                    }
+                    OptionButton.TYPE_SCAN_CANCEL -> {
+                        BaosWatchSdk.stopScan()
+                    }
                     OptionButton.TYPE_CONNECT -> {
                         BaosWatchSdk.connectDevice(macAddress)
                     }
-                    OptionButton.TYPE_SET_USER->{
+                    OptionButton.TYPE_CONNECT_BT -> {
+                        BaosWatchSdk.connectBluetoothBt()
+                    }
+                    OptionButton.TYPE_BOND -> {
+                        BaosWatchSdk.bondDevice(macAddress)
+                    }
+                    OptionButton.TYPE_SET_USER -> {
                         val user_info_config = User_info_config()
                         user_info_config.birth_day = 1
                         user_info_config.birth_year = 91
-                        user_info_config.birth_month =3
-                        user_info_config.gender =1
-                        user_info_config.height_cm=175
-                        user_info_config.user_name ="test"
+                        user_info_config.birth_month = 3
+                        user_info_config.gender = 1
+                        user_info_config.height_cm = 175
+                        user_info_config.user_name = "test"
                         user_info_config.weight_kg = 65
                         BaosWatchSdk.setUserInfo(user_info_config)
                     }
@@ -335,6 +430,8 @@ class MainActivity : AppCompatActivity() {
                     OptionButton.TYPE_BIND_DEVICE -> {
                         BaosWatchSdk.bindDevice("12") {
                             if (it) {
+                                // 连接 BT
+                                BaosWatchSdk.connectBluetoothBt()
                                 addShowText(resources.getString(R.string.bind_device_success))
                             } else {
                                 addShowText(resources.getString(R.string.bind_device_fail))
@@ -342,16 +439,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     OptionButton.TYPE_UNBIND_DEVICE -> {
-                        rxPermission.request(
-                            Manifest.permission.READ_PHONE_STATE
-                        ).subscribe {
-                            if (it) {
-                                BaosWatchSdk.unBindDevice("12")
-                            } else {
-
-                            }
-                        }
-
+                        BaosWatchSdk.unBindDevice("12")
                     }
                     OptionButton.TYPE_GET_WATCH_INFO -> {
                         BaosWatchSdk.getWatchInfo {
@@ -365,7 +453,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     OptionButton.TYPE_SET_TIME -> {
-                        BaosWatchSdk.setTime(System.currentTimeMillis(),0)
+                        BaosWatchSdk.setTime(System.currentTimeMillis(), 0)
                     }
                     OptionButton.TYPE_SET_TIME_FORMAT12 -> {
                         BaosWatchSdk.setTimeFormat(0)
@@ -453,17 +541,17 @@ class MainActivity : AppCompatActivity() {
                         })
                     }
                     OptionButton.TYPE_GET_REAL_DAILY_DATA -> {
-                     val dailyData=  BaosWatchSdk.getRealTimeDailyActiveData()
+                        val dailyData = BaosWatchSdk.getRealTimeDailyActiveData()
                         addShowText("实时每日活动数据：")
                         addShowText(getObjectString(dailyData))
                     }
                     OptionButton.TYPE_GET_REAL_HR_DATA -> {
-                        val hr=  BaosWatchSdk.getRealTimeHeartRateData()
+                        val hr = BaosWatchSdk.getRealTimeHeartRateData()
                         addShowText("实时心率数据：")
                         addShowText(getObjectString(hr))
                     }
                     OptionButton.TYPE_GET_REAL_SPO_DATA -> {
-                        val spo=  BaosWatchSdk.getRealTimeDailySpoData()
+                        val spo = BaosWatchSdk.getRealTimeDailySpoData()
                         addShowText("实时血氧数据：")
                         addShowText(getObjectString(spo))
                     }
@@ -481,6 +569,7 @@ class MainActivity : AppCompatActivity() {
                         addShowText("每日睡眠汇总数据：")
                         val result = BaosWatchSdk.queryDailySleepSumData(startTime, endTime)
                         addShowText(getObjectString(result))
+                        LogUtil.e("--${getObjectString(result)}")
                     }
                     OptionButton.TYPE_QUERY_SPORT -> {
                         addShowText("运动数据：")
@@ -514,20 +603,78 @@ class MainActivity : AppCompatActivity() {
                     }
                     OptionButton.TYPE_FIND_PHONE -> {
                         addShowText("打开寻找手机")
-                       BaosWatchSdk.findMobile(true)
+                        BaosWatchSdk.findMobile(true)
                     }
                     OptionButton.TYPE_CLOSE_FIND_PHONE -> {
                         addShowText("关闭寻找手机")
-                       BaosWatchSdk.findMobile(false)
+                        BaosWatchSdk.findMobile(false)
                     }
                     OptionButton.TYPE_OPEN_MUSIC -> {
                         addShowText("打开音乐控制")
-                        BaosWatchSdk.musicControl(true,this)
+                        BaosWatchSdk.musicControl(true, this)
                     }
                     OptionButton.TYPE_CLOSE_MUSIC -> {
                         addShowText("关闭音乐控制")
-                        BaosWatchSdk.musicControl(false,this)
+                        BaosWatchSdk.musicControl(false, this)
                     }
+                    OptionButton.TYPE_GET_CONTACT -> {
+                        BaosWatchSdk.getCommonContact { }
+                    }
+                    OptionButton.TYPE_GET_CONTACT_SET -> {
+                        var list = mutableListOf <ContactInfoEntity>()
+                        var c = ContactInfoEntity();
+                        c.name = " 111";
+                        c.number = " 22231312";
+                        list.add(c)
+                        BaosWatchSdk.setCommonContactWithContactArr(list)
+                    }
+                    OptionButton.TYPE_PRAYER_GPS_TIME -> {
+                        var entity = PrayerGpsEntity();
+                        entity.latitude = 225777481
+                        entity.longitude = 1139428623
+
+
+                        BaosWatchSdk.setPrayerGps(entity) {
+                            Log.d("xcl_debug", "设置祈祷参数结果2：$it")
+                        }
+
+                    }
+                    OptionButton.TYPE_PRAYER_TIME -> {
+//                        var list = mutableListOf <ContactInfoEntity>()
+//                        var c = ContactInfoEntity();
+//                        c.name = " 111";
+//                        c.number = " 22231312";
+//                        list.add(c)
+//                        BaosWatchSdk.setCommonContactWithContactArr(list)
+
+
+                        var entity = PrayerTimeEntity();
+                        entity.calc_method = 1
+                        entity.asr_juristic = 0
+                        entity.fajr_angle = 160000
+                        entity.maghrib_value = 40000
+                        entity.isha_value = 140000
+                        entity.maghrib_is_minutes = 0
+                        entity.isha_is_minutes = 0
+
+                        BaosWatchSdk.setPrayerTime(entity) {
+                            Log.d("xcl_debug", "设置祈祷参数结果2：$it")
+                        }
+                    }
+                    OptionButton.TYPE_CONNECT_MORE -> {
+                        BaosWatchSdk.disConnectDevice()
+                        BaosWatchSdk.disBond();
+                        Handler().postDelayed({
+                            BaosWatchSdk.connectDevice("FB:B8:00:FF:E1:FF")
+                        }, 1000)
+                    }
+                    OptionButton.TYPE_CONNECT_MORE_LIST -> {
+                        Log.e("list", BaosWatchSdk.getConnectAllDevice())
+                    }
+                    OptionButton.TYPE_CONNECT_MORE_NOW -> {
+                        Log.e("list", BaosWatchSdk.getConnectNowDevice())
+                    }
+
                 }
             }
         }
@@ -556,24 +703,109 @@ class MainActivity : AppCompatActivity() {
                 connectStatusTv.text = resources.getString(R.string.str_connecting)
             }
 
+            LogUtil.e("onBLEConnecting---连接中")
+
         }
 
         override fun onBLEConnected() {
             runOnUiThread {
                 connectStatusTv.text = resources.getString(R.string.str_connected)
             }
+            LogUtil.e("onBLEConnected---已连接")
+//            if (WatchBindManager.getInstance().hasOtaStatus(applicationContext)) {
+//                //升级OTA 成功
+//                Toast.makeText(applicationContext, "OTA升级成功",Toast.LENGTH_LONG).show()
+//                WatchBindManager.getInstance().hasOtaStatus(applicationContext, false)
+//            }
+
         }
 
         override fun onBLEConnectFail() {
             runOnUiThread {
                 connectStatusTv.text = resources.getString(R.string.str_disconnected)
             }
+            LogUtil.e("onBLEConnected---已断开")
         }
 
-        override fun onBLEDisConnected() {
+        override fun onBLEDisConnected(msg: String?, cause: Int, status: Int, newState: Int) {
+            //  if (status == 133 || status == 19) { 手表已经配对过了
             runOnUiThread {
                 connectStatusTv.text = resources.getString(R.string.str_disconnected)
             }
+            LogUtil.e("onBLEConnected---已断开--onBLEDisConnected")
+            LogUtil.d(
+                """
+                     onBLEDisConnected--->
+                     ConnectionCongested	143	
+                     Failure	257	
+                     InsufficientAuthentication	5	
+                     InsufficientAuthorization	8	
+                     InsufficientEncryption	15	
+                     InvalidAttributeLength	13	
+                     InvalidOffset	7	
+                     ReadNotPermitted	2	
+                     RequestNotSupported	6	
+                     Success	0	
+                     WriteNotPermitted	3
+                     """.trimIndent()
+            )
+        }
+
+//        /**
+//         * 1-手动调用 2-弹窗提示断开 3-断开重连 4-蓝牙广播:正在关闭蓝牙
+//         */
+//        override fun onBLEDisConnected(msg : String, cause : Int) {
+//            Log.e("onBLEDisConnected", msg + "---->" + cause)
+//
+//            runOnUiThread {
+//                connectStatusTv.text = resources.getString(R.string.str_disconnected)
+//            }
+//
+////            if (TextUtils.isEmpty(msg) && msg.contains("watch")) {
+////                //蓝牙异常需要重启。。。最好弄个弹窗（我业务代码加了的
+////                BTClient.getInstance().requestCloseBluetooth();
+////            } else{
+////                val timerTask: TimerTask = object : TimerTask() {
+////                    override fun run() {
+////                        val isBindAlready = WatchBindManager.getInstance().hasBindWatch(applicationContext)
+////                        if (isBindAlready) {
+////                            LogUtil.d("连接蓝牙-未绑定,flutter 应该只会调用startScan")
+////                            val isAutoOtaMode1 = SharePreferenceUtils.queryBooleanByKeySetBoolean(
+////                                applicationContext,
+////                                "setAutoOtaModeOpenOrClose",
+////                                false
+////                            )
+////                            if (isAutoOtaMode1) {
+////                                HbBtClientManager.getInstance().startScan()
+////                                LogUtil.d("连接蓝牙-未绑定,自动升级模式，启动随机连接")
+////                            } else {
+////                                //开始连接，主流程已绑定时通过通道获得mac地址，调用进行连接指定设备地址的手表
+////                                val macAddress = WatchBindManager.getInstance().getBindWatchAddress(applicationContext)
+////                                LogUtil.d("连接蓝牙, 携带地址:$macAddress")
+////                                WatchBindManager.getInstance().connectWatchByMacAddress(macAddress)
+////                            }
+////                        }
+////                    }
+////                }
+////                Timer().schedule(timerTask, 1000, 3000)
+////            }
+//        }
+
+        override fun onBLEBindIng(result: Boolean) {
+            Log.e("onBLEBindIng", "--" + result.toString())
+            runOnUiThread {
+                if (result)
+                    connectStatusTv.text = resources.getString(R.string.str_bing_success)
+                else
+                    connectStatusTv.text = resources.getString(R.string.str_bing_fail)
+            }
+            LogUtil.e("onBLEBindIng---绑定成功--")
+        }
+
+        // 12 成功  10 取消配对  其他不管
+        override fun onBtBindIng(bondState: Int) {
+            Log.e("onBtBindIng", "--" + bondState.toString())
+            LogUtil.e("onBtBindIng--- --${bondState}")
         }
 
     }
@@ -600,6 +832,10 @@ class MainActivity : AppCompatActivity() {
             addShowText(Arrays.toString(data))
         }
 
+        override fun onUserInfoConfig(actionSync: User_info_config?) {
+
+        }
+
 
         override fun onActionSync(actionSync: Action_sync?) {
             addShowText("设备主动发送： 收到动作请求，同步给APP")
@@ -614,6 +850,10 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPhoneStatus(status: Int) {
             addShowText("设备主动发送：收到电话请求：$status")
+        }
+
+        override fun onFindByPhoneStatus(status: Int) {
+            addShowText("设备主动发送寻找手机：收到寻找手机请求：$status")
         }
 
 
