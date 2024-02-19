@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
     implementation("io.reactivex.rxjava2:rxjava:2.1.12")
-    implementation 'me.rosuh:AndroidFilePicker:0.7.4-x'
+    implementation 'me.rosuh:AndroidFilePicker:1.0.0'
 
-    implementation(name:'watchSdk.1.0.0', ext:'aar')
+    implementation(name:'watchSdk-1.1.6', ext:'aar')
 }
