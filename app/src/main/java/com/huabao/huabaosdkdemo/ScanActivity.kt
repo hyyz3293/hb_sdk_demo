@@ -231,7 +231,9 @@ class ScanActivity : AppCompatActivity() {
             deviceBean.deviceRssi = "${result?.rssi}"
             if (!deviceList.contains(deviceBean)) {
                 deviceList.add(deviceBean)
-                deviceAdapter.notifyDataSetChanged()
+                deviceRecyclerView.post {
+                    deviceAdapter.notifyDataSetChanged()
+                }
             }
         }
 

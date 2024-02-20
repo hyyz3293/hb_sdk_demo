@@ -68,7 +68,7 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxjava:2.1.12")
     implementation 'me.rosuh:AndroidFilePicker:1.0.1'
 
-    implementation(name:'watchSdk.1.2.2', ext:'aar')
+    implementation(name:'watchSdk.1.2.3', ext:'aar')
 
     api 'com.google.code.gson:gson:2.10.1'
 }
