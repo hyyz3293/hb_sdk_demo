@@ -13,6 +13,7 @@
     <string name="str_connect_bt">连接 BT</string>
     <string name="str_bond">配对</string>
     <string name="str_connect_more">连接-多设备</string>
+    <string name="str_connect_more_11">连接-多设备-切换A</string>
     <string name="str_connect_more_device">多设备-列表</string>
     <string name="str_connect_more_now">多设备-当前</string>
     <string name="str_disconnect">断开连接</string>

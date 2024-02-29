@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.baos.watch.sdk.BaosWatchSdk
 import cn.baos.watch.sdk.api.ScannerListener
+import cn.baos.watch.sdk.utils.LogUtil
 import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.android.synthetic.main.activity_scan.*
 
@@ -229,11 +230,14 @@ class ScanActivity : AppCompatActivity() {
 
             deviceBean.deviceMac = result?.device?.address
             deviceBean.deviceRssi = "${result?.rssi}"
+
             if (!deviceList.contains(deviceBean)) {
+                LogUtil.e("de-->" + deviceBean.deviceMac)
                 deviceList.add(deviceBean)
                 deviceRecyclerView.post {
                     deviceAdapter.notifyDataSetChanged()
                 }
+
             }
         }
 

@@ -18,7 +18,7 @@ public class OptionButton {
 
     public static final int TYPE_CONNECT_BT = 100;
     public static final int TYPE_BOND = 124;
-
+    public static final int TYPE_CONNECT_MORE11 = 11111;
     public static final int TYPE_CONNECT_MORE = 111;
     public static final int TYPE_CONNECT_MORE_LIST = 112;
     public static final int TYPE_CONNECT_MORE_NOW = 113;

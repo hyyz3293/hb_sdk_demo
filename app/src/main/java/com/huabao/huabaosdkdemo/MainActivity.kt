@@ -120,6 +120,12 @@ class MainActivity : AppCompatActivity() {
         )
         buttons.add(
             OptionButton(
+                resources.getString(R.string.str_connect_more_11),
+                OptionButton.TYPE_CONNECT_MORE11
+            )
+        )
+        buttons.add(
+            OptionButton(
                 resources.getString(R.string.str_connect_more_device),
                 OptionButton.TYPE_CONNECT_MORE_LIST
             )
@@ -665,8 +671,14 @@ class MainActivity : AppCompatActivity() {
                         BaosWatchSdk.disConnectDevice()
                         BaosWatchSdk.disBond();
                         Handler().postDelayed({
-                            BaosWatchSdk.connectDevice("FB:B8:00:FF:E1:FF")
+                            BaosWatchSdk.connectDevice("83:34:80:D3:BE:BD")
                         }, 1000)
+                    }
+                    OptionButton.TYPE_CONNECT_MORE11 -> {
+                        BaosWatchSdk.unBindDevice("3D:71:74:6A:43:75")
+                        Handler().postDelayed({
+                            BaosWatchSdk.connectDevice("83:34:80:D3:BE:BD")
+                        }, 10000)
                     }
                     OptionButton.TYPE_CONNECT_MORE_LIST -> {
                         Log.e("list", BaosWatchSdk.getConnectAllDevice())
@@ -695,6 +707,7 @@ class MainActivity : AppCompatActivity() {
     private fun initSdkFun() {
         BaosWatchSdk.addConnectListener(connectListener)
         BaosWatchSdk.addDeviceCallBack(deviceCallBack)
+        BaosWatchSdk.isReloadConnect(false)
     }
 
     private val connectListener = object : ConnectListener {
